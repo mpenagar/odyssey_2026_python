@@ -13,7 +13,6 @@ setup(
         "matplotlib",
         "scikit-learn",
         "scipy",
-        "os",
         "requests"
     ]
 )
