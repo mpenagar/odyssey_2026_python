@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc, det_curve
 from scipy.stats import norm
+import numpy as np
 
 def evaluate(y, score_matrix):
     """
