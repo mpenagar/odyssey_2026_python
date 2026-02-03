@@ -17,5 +17,5 @@ def _download_data():
 _download_data()
 _data = np.load(_path, allow_pickle=True)
 
-embeddings = _data['X']
-spk_ids =    _data['y']
+embeddings = _data['embeddings']
+spk_ids =    _data['speakers']
