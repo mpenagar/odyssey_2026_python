@@ -7,7 +7,7 @@ _path = os.path.join(os.path.dirname(__file__), 'librispeech_pyannote.npz')
 
 # 2. Carga inmediata al importar este módulo específico
 print("Cargando LibriSpeech...")
-_data = np.load(_path, allow_pickle=True)
+_data = np.load(_path)
 
 embeddings = _data['X']
 spk_ids = _data['y']
