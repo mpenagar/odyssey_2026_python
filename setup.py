@@ -12,6 +12,8 @@ setup(
         "numpy",
         "matplotlib",
         "scikit-learn",
-        "scipy"
+        "scipy",
+        "os",
+        "requests"
     ]
 )
