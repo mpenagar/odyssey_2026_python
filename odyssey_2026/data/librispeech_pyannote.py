@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 # 1. Ruta relativa a ESTE archivo
-_path = os.path.join(os.path.dirname(__file__), 'librispeech-pyannote_embeddings.npz')
+_path = os.path.join(os.path.dirname(__file__), 'librispeech_pyannote.npz')
 
 # 2. Carga inmediata al importar este módulo específico
 print("Cargando LibriSpeech...")
