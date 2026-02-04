@@ -1,6 +1,7 @@
 # odyssey_2026/core.py
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc, det_curve
+from sklearn.model_selection import train_test_split
 from scipy.stats import norm
 import numpy as np
 
@@ -117,3 +118,40 @@ def plot_det_curve(labels, scores, label='Sistema'):
     plt.legend()
 
     plt.show()
+
+def train_test_y_split(X, y, test_size=0.5, random_state=42):
+    """
+    Separa train/test por etiquetas y. El conjunto resultante de 
+    etiquetas de X_train y X_test es disjunto
+    """
+
+    # Obtener las IDs únicas
+    y_unique = np.unique(y)
+
+    # Dividir las IDs únicas en entrenamiento y test
+    train_ids, test_ids = train_test_split(y_unique, test_size=test_size, random_state=random_state)
+
+    # Crear máscaras para seleccionar los vectores y etiquetas correspondientes
+    train_mask = np.isin(y, train_ids)
+    test_mask  = np.isin(y, test_ids)
+
+    # Aplicar las máscaras para obtener los conjuntos de entrenamiento y prueba
+    X_train = X[train_mask]
+    y_train = y[train_mask]
+
+    X_test = X[test_mask]
+    y_test = y[test_mask]
+
+    print(f"Shape de X_train: {X_train.shape}")
+    print(f"Shape de y_train: {y_train.shape}")
+    print(f"Número de speakers únicos en train: {len(np.unique(y_train))}")
+
+    print(f"\nShape de X_test: {X_test.shape}")
+    print(f"Shape de y_test: {y_test.shape}")
+    print(f"Número de speakers únicos en test: {len(np.unique(y_test))}")
+
+    # Verificar que no haya solapamiento de speakers
+    overlap_speakers = np.intersect1d(np.unique(y_train), np.unique(y_test))
+    print(f"\nNúmero de speakers solapados entre train y test: {len(overlap_speakers)}")
+
+    return X_train, X_test, y_train, y_test
