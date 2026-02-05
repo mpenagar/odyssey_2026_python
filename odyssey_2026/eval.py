@@ -101,7 +101,7 @@ def plot_det_curve(scores, target, label='Sistema'):
     """
 
     # 1. Calcular FPR y FNR
-    fpr, fnr, _ = det_curve(labels, scores, pos_label=1)
+    fpr, fnr, _ = det_curve(target, scores, pos_label=1)
 
     # 2. Transformación a Escala Normal (Probit)
     # ppf es la 'Percent Point Function' (inversa de la CDF)
