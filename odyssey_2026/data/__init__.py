@@ -7,6 +7,7 @@ from ._utils import download_data
 # 1. Definimos qué datasets existen realmente
 # Esto es importante para que el sistema sepa qué descargar
 _AVAILABLE_DATASETS = [
+    'librispeech_dev_clean_pyannote_legacy', 
     'librispeech_dev_clean_pyannote_restnet34', 
     'librispeech_train_clean_100_pyannote_restnet34', 
     'librispeech_train_clean_360_pyannote_restnet34'
