@@ -1,4 +1,5 @@
 from ._utils import download_data
+from pathlib import Path
 import numpy as np
 
 _path = download_data(Path(__file__).stem)
