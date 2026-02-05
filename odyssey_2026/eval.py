@@ -30,7 +30,7 @@ def target_scores(y, score_matrix):
 
     return scores, target
 
-def eer(scores, target):
+def get_eer(scores, target):
     """
     Estima el Equal Error Rate
 
