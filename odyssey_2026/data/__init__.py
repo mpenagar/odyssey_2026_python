@@ -40,6 +40,15 @@ def __getattr__(name):
     dataset.embeddings = data['embeddings']
     dataset.spk_ids = data['speakers']
     
+    # Esto inyecta la variable 'dataset' en este fichero __init__.py 
+    # con el nombre del dataset (ej: librispeech_...) para que no lo cargue
+    # más de una vez
+    globals()[name] = dataset
+    
+    # Opcional (Nivel Pro): Si quieres que Python crea que es un módulo real
+    # para que 'import voice_tools.data.librispeech...' funcione perfecto:
+    # sys.modules[f"{__name__}.{name}"] = dataset
+
     return dataset
 
 # 3. Esto ayuda al autocompletado del IDE (VS Code / Colab)
