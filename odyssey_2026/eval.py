@@ -98,7 +98,8 @@ def plot_det_curve(scores, target, label='Sistema'):
     scores: vector de scores
     target: vector de targets (1:target, 0:non-target)
     threshold_eer: umbral de EER
-    """    """
+    """
+
     # 1. Calcular FPR y FNR
     fpr, fnr, _ = det_curve(labels, scores, pos_label=1)
 
