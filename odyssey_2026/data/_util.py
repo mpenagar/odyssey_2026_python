@@ -4,7 +4,8 @@ import requests
 def download_data(name):
     path = os.path.join(os.path.dirname(__file__), name + '.npz')
     if not os.path.exists(path):
-        URL = "https://github.com/mpenagar/odyssey_2026_python/releases/download/latest/" + name +'.npz'
+        BASE_URL = "https://github.com/mpenagar/odyssey_2026_python/releases/download/latest"
+        URL = f"{BASE_URL}/{name}.npz"
         print(f"Descargando dataset {name} a {path} ...")
         response = requests.get(URL, stream=True)
         with open(path, 'wb') as f:
