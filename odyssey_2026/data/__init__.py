@@ -40,10 +40,6 @@ def __getattr__(name):
     dataset.embeddings = data['embeddings']
     dataset.spk_ids = data['speakers']
     
-    # Alias X e y (por si acaso)
-    dataset.X = dataset.embeddings
-    dataset.y = dataset.spk_ids
-    
     return dataset
 
 # 3. Esto ayuda al autocompletado del IDE (VS Code / Colab)
