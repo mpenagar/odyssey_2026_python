@@ -1,39 +1,49 @@
-# odyssey_2026/core.py
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc, det_curve
 from sklearn.model_selection import train_test_split
 from scipy.stats import norm
 import numpy as np
 
-def evaluate(y, score_matrix):
+def target_scores(y, score_matrix):
     """
+    Extrae el vector de scores y targets (1/0) a partir del vector de etiquetas
+    y la matriz cuadrada que contiene los scores de todos los cruces.
+
     y: Vector de etiquetas (N_samples,)
     score_matrix: matriz de scores (N_samples,N_samples)
     """
 
-    print(f"--- Iniciando Benchmark con {len(y)} muestras ---")
-
-    # 2. Crear Matriz de Ground Truth (N x N)
+    # 1. Crear Matriz de Ground Truth (N x N)
     # True si son el mismo locutor, False si son diferentes
     # Truco de broadcasting: Compara columna contra fila
     ground_truth_matrix = (y[:, np.newaxis] == y[np.newaxis, :])
 
-    # 3. Extraer solo el triángulo superior (sin diagonal)
+    # 2. Extraer solo el triángulo superior (sin diagonal)
     # Esto evita duplicados (A vs B es lo mismo que B vs A) y auto-comparación (A vs A)
     mask = np.triu(np.ones_like(ground_truth_matrix, dtype=bool), k=1)
 
     scores = score_matrix[mask]       # Lista plana de similitudes
-    labels = ground_truth_matrix[mask] # Lista plana de True/False
+    target = ground_truth_matrix[mask] # Lista plana de True/False
 
     # Convertir etiquetas a enteros (1 = Mismo Locutor, 0 = Diferente)
-    labels = labels.astype(int)
+    target = target.astype(int)
 
-    print(f"Total de pares evaluados: {len(scores)}")
-    print(f"   - Pares Positivos (Mismo Locutor): {np.sum(labels)}")
-    print(f"   - Pares Negativos (Diferente Locutor): {len(labels) - np.sum(labels)}")
+    return scores, target
 
-    # 4. Calcular Curva ROC y EER
-    fpr, tpr, thresholds = roc_curve(labels, scores)
+def eer(scores, target):
+    """
+    Estima el Equal Error Rate
+
+    scores: vector de scores
+    target: vector de targets (1:target, 0:non-target)
+    """
+    
+    print(f"Total de scores evaluados: {len(scores)}")
+    print(f"   - Scores Positivos (target): {np.sum(target)}")
+    print(f"   - Scores Negativos (non-target): {len(target) - np.sum(target)}")
+
+    # 1. Calcular Curva ROC y EER
+    fpr, tpr, thresholds = roc_curve(target, scores)
     fnr = 1 - tpr
 
     # El EER es el punto donde FPR se cruza con FNR
@@ -47,12 +57,21 @@ def evaluate(y, score_matrix):
     print(f"Umbral óptimo (Similitud): {threshold_eer:.4f}")
     print(f"---------------------------------------")
 
-    return scores, labels, eer, threshold_eer
+    return eer, threshold_eer
 
-def plot_results(scores, labels, threshold, xlabel='score'):
+
+def plot_hist(scores, target, threshold_eer, xlabel='score'):
+    """
+    Muestra el histograma de scores
+
+    scores: vector de scores
+    target: vector de targets (1:target, 0:non-target)
+    threshold_eer: umbral de EER
+    """
+    
     # Separar puntuaciones
-    pos_scores = scores[labels == 1] # Mismo locutor
-    neg_scores = scores[labels == 0] # Diferente locutor
+    pos_scores = scores[target == 1] # Mismo locutor
+    neg_scores = scores[target == 0] # Diferente locutor
 
     plt.figure(figsize=(10, 5))
 
@@ -61,7 +80,7 @@ def plot_results(scores, labels, threshold, xlabel='score'):
     plt.hist(neg_scores, bins=50, alpha=0.5, color='red', label='Impostor', density=True)
 
     # Línea del umbral
-    plt.axvline(threshold, color='black', linestyle='--', label=f'Umbral EER ({threshold:.2f})')
+    plt.axvline(threshold_eer, color='black', linestyle='--', label=f'Umbral EER ({threshold_eer:.2f})')
 
     plt.xlabel(xlabel)
     plt.ylabel('Densidad')
@@ -71,11 +90,15 @@ def plot_results(scores, labels, threshold, xlabel='score'):
     plt.show()
 
 
-def plot_det_curve(labels, scores, label='Sistema'):
+def plot_det_curve(scores, target, label='Sistema'):
     """
     Genera una curva DET usando la escala de Desviación Normal (Probit),
     haciendo que las distribuciones gaussianas se vean como líneas rectas.
-    """
+
+    scores: vector de scores
+    target: vector de targets (1:target, 0:non-target)
+    threshold_eer: umbral de EER
+    """    """
     # 1. Calcular FPR y FNR
     fpr, fnr, _ = det_curve(labels, scores, pos_label=1)
 
@@ -121,7 +144,7 @@ def plot_det_curve(labels, scores, label='Sistema'):
 
 def train_test_y_split(X, y, test_size=0.5, random_state=42):
     """
-    Separa train/test por etiquetas y. El conjunto resultante de 
+    Separa train/test por etiquetas y. El conjunto resultante de
     etiquetas de X_train y X_test es disjunto
     """
 
