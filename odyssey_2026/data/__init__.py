@@ -17,8 +17,8 @@ _AVAILABLE_DATASETS = [
 def __getattr__(name):
     
     # Si piden algo que no está en nuestra lista, error normal
-    if name not in _AVAILABLE_DATASETS:
-        raise AttributeError(f"El dataset '{name}' no existe en odyssey_2026.data")
+    #if name not in _AVAILABLE_DATASETS:
+    #    raise AttributeError(f"El dataset '{name}' no existe en odyssey_2026.data")
     
     # --- LOGICA DE CARGA AUTOMÁTICA ---
     print(f"Cargando dataset dinámico: {name} ...")
