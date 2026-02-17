@@ -47,8 +47,14 @@ def get_eer(scores, target):
     fnr = 1 - tpr
 
     # El EER es el punto donde FPR se cruza con FNR
+    fpr_fnr_diff = float(np.abs(fpr - fnr).min()) * 100
+    if fpr_fnr_diff > 1.0 :
+        print() 
+        print("*"*44)
+        print(f"WARNING! INNACURATE EER: {fpr_fnr_diff=:.2f}% ")
+        print("*"*44)
     idx_eer = np.nanargmin(np.abs(fpr - fnr))
-    eer = fpr[idx_eer]
+    eer = (fpr[idx_eer] + fnr[idx_eer])/2
     threshold_eer = thresholds[idx_eer]
 
     print(f"\nResultados:")
